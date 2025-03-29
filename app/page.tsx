@@ -1,56 +1,88 @@
 "use client"
 
-import React from 'react'
 import { useState, useEffect } from "react"
-import VideoCard from "./video-card"
-import { Video } from "@/lib/data"
+import VideoGrid from "@/components/video-grid"
+import Header from "@/components/header"
+import { Video, videos } from "@/lib/data"
+import { shuffleArray } from "@/lib/utils"
+import VideoCard from "@/components/video-card"
 
-interface VideoGridProps {
-  videos: Video[]
+// Helper function to perform search
+const fetchSearchResults = (query: string) => {
+  return new Promise((resolve) => {
+    // Filter videos locally based on title and description
+    const results = videos.filter((video) => {
+      const searchTerm = query.toLowerCase()
+      return (
+        video.title.toLowerCase().includes(searchTerm) ||
+        video.description.toLowerCase().includes(searchTerm)
+      )
+    })
+    resolve(results)
+  })
 }
 
-const VideoGrid: React.FC<VideoGridProps> = ({ videos }) => {
-  const [visibleVideos, setVisibleVideos] = useState<Video[]>([])
+export default function Home() {
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([])
+  const [isSearching, setIsSearching] = useState(false)
 
+  // Shuffle videos on initial load
   useEffect(() => {
-    // Add animation delay for staggered appearance
-    const timer = setTimeout(() => {
-      setVisibleVideos(videos)
-    }, 100)
+    if (Array.isArray(videos) && videos.length > 0) {
+      setFilteredVideos(shuffleArray(videos));
+    } else {
+      console.error("Videos array is not defined or empty");
+    }
+  }, [])
 
-    return () => clearTimeout(timer)
-  }, [videos])
+  const handleSearch = async (query: string) => {
+    try {
+      setIsSearching(true)
 
-  if (!videos || videos.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20">
-        <h2 className="text-2xl font-bold mb-4">No videos found</h2>
-        <p className="text-muted-foreground">Try searching for something else</p>
-      </div>
-    )
+      if (!query.trim()) {
+        // When search is cleared, show random videos again
+        if (Array.isArray(videos) && videos.length > 0) {
+          setFilteredVideos(shuffleArray(videos));
+        }
+        return
+      }
+
+      // Search logic
+      const results = videos.filter((video) => {
+        const searchTerm = query.toLowerCase()
+        return (
+          video.title.toLowerCase().includes(searchTerm) ||
+          video.description.toLowerCase().includes(searchTerm)
+        )
+      })
+      
+      setFilteredVideos(results)
+    } catch (error) {
+      console.error('Search error:', error)
+      if (Array.isArray(videos) && videos.length > 0) {
+        setFilteredVideos(shuffleArray(videos)); // Show random videos on error
+      }
+    } finally {
+      setIsSearching(false)
+    }
   }
 
   return (
-    <div className="space-y-8">
-      <div 
-        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6"
-        style={{
-          perspective: '1000px',
-          transformStyle: 'preserve-3d'
-        }}
-      >
-        {visibleVideos.map((video, index) => (
-          <div
-            key={video.id}
-            className="w-full"
-          >
-            <VideoCard video={video} index={index} />
+    <main className="min-h-screen">
+      <Header 
+        onSearch={handleSearch} 
+        isHomePage={true} 
+      />
+      <section className="container mx-auto px-4 py-6 md:py-10">
+        {isSearching ? (
+          <div className="flex justify-center items-center min-h-[200px]">
+            <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
-        ))}
-      </div>
-    </div>
+        ) : (
+          <VideoGrid videos={filteredVideos} />
+        )}
+      </section>
+    </main>
   )
 }
-
-export default VideoGrid
 
