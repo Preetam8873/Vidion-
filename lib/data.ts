@@ -14,9 +14,6 @@ export type Video = {
 }
 
 export const videos: Video[] = [
-  
-
-
   {
     id: 1262,
     title: "Lecture 1: Intro to Programming & Flowcharts",
@@ -2125,7 +2122,7 @@ export const videos: Video[] = [
     {
       id: 177,
       title: "178. Two Trees Mirror OR Identical",
-      thumbnail: "https://i.postimg.cc/PxZ0fZn0/unnamed.jpg",
+      thumbnail: "https://drive.google.com/thumbnail?id=1-9DIJg2kE4HMY2Q8bsQT8IiyxwlaQreg",
       url: "https://drive.google.com/file/d/1-9DIJg2kE4HMY2Q8bsQT8IiyxwlaQreg/preview",
       uploader: "Preetam Singh",
       views: "11700",
@@ -2641,5 +2638,5 @@ export const videos: Video[] = [
       likes: "1540",
       comments: "755"
     }
-  ];
-  
+]
+

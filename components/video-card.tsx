@@ -11,16 +11,7 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import { Video } from "@/lib/data"
 
 interface VideoCardProps {
-  video: {
-    id: string
-    title: string
-    thumbnail: string
-    description: string
-    views: string | number
-    uploader: string
-    uploadDate: string
-    likes: string | number
-  }
+  video: Video
   index: number
 }
 
@@ -32,6 +23,22 @@ function VideoCard({ video, index }: VideoCardProps) {
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false)
   const cardRef = useRef(null)
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const [imageError, setImageError] = useState(false)
+  
+  // Fallback image URL
+  const fallbackImage = "/placeholder.jpg" // Add a placeholder image in your public folder
+  
+  // Validate thumbnail URL
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url)
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  const thumbnailUrl = isValidUrl(video.thumbnail) ? video.thumbnail : fallbackImage
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -78,10 +85,11 @@ function VideoCard({ video, index }: VideoCardProps) {
         <Link href={`/video/${video.id}`} className="block">
           <div className="relative w-full pb-[56.25%] overflow-hidden bg-muted rounded-lg">
             <Image
-              src={video.thumbnail}
+              src={imageError ? fallbackImage : thumbnailUrl}
               alt={video.title}
               fill
               className="object-cover transition-transform group-hover:scale-105"
+              onError={() => setImageError(true)}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority={index < 4}
             />
@@ -109,7 +117,7 @@ function VideoCard({ video, index }: VideoCardProps) {
 
           <p className="text-sm text-muted-foreground mt-1">{video.uploader}</p>
           <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
-            <span>{video.views} views</span>
+            <span>{video.views.toLocaleString()} views</span>
             <span>•</span>
             <span>{video.uploadDate}</span>
           </div>

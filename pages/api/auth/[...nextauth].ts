@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import GoogleProvider from "next-auth/providers/google"; // Correct import for Google provider
+import EmailProvider from "next-auth/providers/email"; // Correct import for Email provider
 import { auth } from "../../../firebaseConfig"; // Adjust the path as necessary
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default NextAuth({
   providers: [
-    Providers.Email({
+    EmailProvider({
       server: {
         // Your SMTP server configuration
         host: process.env.SMTP_HOST,
@@ -17,7 +18,7 @@ export default NextAuth({
       },
       from: process.env.SMTP_FROM,
     }),
-    Providers.Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),

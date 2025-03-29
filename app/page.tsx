@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import VideoGrid from "@/components/video-grid"
 import Header from "@/components/header"
-import { videos } from "@/lib/data"
+import { Video, videos } from "@/lib/data"
 import { shuffleArray } from "@/lib/utils"
 
 // Helper function to perform search
@@ -22,12 +22,16 @@ const fetchSearchResults = (query: string) => {
 }
 
 export default function Home() {
-  const [filteredVideos, setFilteredVideos] = useState(videos)
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([])
   const [isSearching, setIsSearching] = useState(false)
 
   // Shuffle videos on initial load
   useEffect(() => {
-    setFilteredVideos(shuffleArray(videos))
+    if (Array.isArray(videos) && videos.length > 0) {
+      setFilteredVideos(shuffleArray(videos));
+    } else {
+      console.error("Videos array is not defined or empty");
+    }
   }, [])
 
   const handleSearch = async (query: string) => {
@@ -36,7 +40,9 @@ export default function Home() {
 
       if (!query.trim()) {
         // When search is cleared, show random videos again
-        setFilteredVideos(shuffleArray(videos))
+        if (Array.isArray(videos) && videos.length > 0) {
+          setFilteredVideos(shuffleArray(videos));
+        }
         return
       }
 
@@ -52,7 +58,9 @@ export default function Home() {
       setFilteredVideos(results)
     } catch (error) {
       console.error('Search error:', error)
-      setFilteredVideos(shuffleArray(videos)) // Show random videos on error
+      if (Array.isArray(videos) && videos.length > 0) {
+        setFilteredVideos(shuffleArray(videos)); // Show random videos on error
+      }
     } finally {
       setIsSearching(false)
     }

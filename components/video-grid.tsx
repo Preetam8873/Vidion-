@@ -1,5 +1,6 @@
 "use client"
 
+import React from 'react'
 import { useState, useEffect } from "react"
 import VideoCard from "./video-card"
 
@@ -16,10 +17,10 @@ interface Video {
 }
 
 interface VideoGridProps {
-  videos: Video[]
+  videos?: Video[]
 }
 
-function VideoGrid({ videos }: VideoGridProps) {
+const VideoGrid: React.FC<VideoGridProps> = ({ videos = [] }) => {
   const [visibleVideos, setVisibleVideos] = useState<Video[]>([])
 
   useEffect(() => {
@@ -31,7 +32,7 @@ function VideoGrid({ videos }: VideoGridProps) {
     return () => clearTimeout(timer)
   }, [videos])
 
-  if (videos.length === 0) {
+  if (!videos || videos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
         <h2 className="text-2xl font-bold mb-4">No videos found</h2>
