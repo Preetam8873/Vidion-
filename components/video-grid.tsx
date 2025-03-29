@@ -3,24 +3,13 @@
 import React from 'react'
 import { useState, useEffect } from "react"
 import VideoCard from "./video-card"
-
-// Update the Video interface to match VideoCardProps
-interface Video {
-  id: string
-  title: string
-  thumbnail: string
-  description: string
-  views: string | number
-  uploader: string
-  uploadDate: string
-  likes: string | number
-}
+import { Video } from "@/lib/data"
 
 interface VideoGridProps {
-  videos?: Video[]
+  videos: Video[]
 }
 
-const VideoGrid: React.FC<VideoGridProps> = ({ videos = [] }) => {
+const VideoGrid: React.FC<VideoGridProps> = ({ videos }) => {
   const [visibleVideos, setVisibleVideos] = useState<Video[]>([])
 
   useEffect(() => {
