@@ -6,9 +6,9 @@ import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { videos } from "@/lib/data" // Import your video data
 
-// Define a type for the notification
+// Define the Notification type
 interface Notification {
-  id: number;
+  id: string;
   title: string;
   message: string;
   time: string;
@@ -66,6 +66,8 @@ const fetchData = async () => {
 export default function NotificationsPage() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]); // Use the Notification type
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
 
   useEffect(() => {
     // Get 11 random videos from the imported video data
@@ -73,7 +75,7 @@ export default function NotificationsPage() {
 
     // Generate notifications based on the random videos
     const generatedNotifications = randomVideos.map(video => ({
-      id: video.id,
+      id: video.id.toString(),
       title: video.title,
       message: `Check out our latest video titled "${video.title}!"`,
       time: getRandomTime(),
@@ -94,7 +96,15 @@ export default function NotificationsPage() {
     
     // Only trigger search if query is 2 or more characters
     if (query.length >= 2) {
-      onSearch(query)
+      // Implement the filtering logic
+      const results = notifications.filter(notification => 
+        notification.title.toLowerCase().includes(query.toLowerCase()) ||
+        notification.message.toLowerCase().includes(query.toLowerCase())
+      )
+      setFilteredNotifications(results)
+    } else {
+      // If search query is less than 2 characters, show all notifications
+      setFilteredNotifications(notifications)
     }
   }
 
@@ -118,7 +128,16 @@ export default function NotificationsPage() {
 
       <main className="container mx-auto px-4 py-6">
         <div className="space-y-4">
-          {notifications.map((notification) => (
+          {/* Search input */}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search notifications..."
+            className="w-full p-2 border rounded"
+          />
+
+          {filteredNotifications.map((notification) => (
             <div
               key={notification.id}
               className="flex items-center p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer"
