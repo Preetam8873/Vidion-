@@ -66,6 +66,8 @@ const fetchData = async () => {
 export default function NotificationsPage() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]); // Use the Notification type
+  const [searchQuery, setSearchQuery] = useState("")
+  const [filteredNotifications, setFilteredNotifications] = useState([])
 
   useEffect(() => {
     // Get 11 random videos from the imported video data
@@ -94,7 +96,9 @@ export default function NotificationsPage() {
     
     // Only trigger search if query is 2 or more characters
     if (query.length >= 2) {
-      onSearch(query)
+      // Your search logic here
+      const results = // Your filtering logic
+      setFilteredNotifications(results)
     }
   }
 
