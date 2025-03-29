@@ -67,11 +67,7 @@ export default function NotificationsPage() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<Notification[]>([]); // Use the Notification type
   const [searchQuery, setSearchQuery] = useState("")
-<<<<<<< HEAD
   const [filteredNotifications, setFilteredNotifications] = useState<Notification[]>([])
-=======
-  const [filteredNotifications, setFilteredNotifications] = useState([])
->>>>>>> d6675d3a77d0b6b3580f289b74d79d37c9d1b5b1
 
   useEffect(() => {
     // Get 11 random videos from the imported video data
@@ -100,7 +96,6 @@ export default function NotificationsPage() {
     
     // Only trigger search if query is 2 or more characters
     if (query.length >= 2) {
-<<<<<<< HEAD
       // Implement the filtering logic
       const results = notifications.filter(notification => 
         notification.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -110,11 +105,6 @@ export default function NotificationsPage() {
     } else {
       // If search query is less than 2 characters, show all notifications
       setFilteredNotifications(notifications)
-=======
-      // Your search logic here
-      const results = // Your filtering logic
-      setFilteredNotifications(results)
->>>>>>> d6675d3a77d0b6b3580f289b74d79d37c9d1b5b1
     }
   }
 
