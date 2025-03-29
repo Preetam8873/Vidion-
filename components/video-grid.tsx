@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useState, useEffect } from "react"
-import VideoCard from "./video-card"
+import VideoCard from "@/components/video-card"
 import { Video } from "@/lib/data"
 
 interface VideoGridProps {
